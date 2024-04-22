@@ -132,7 +132,7 @@ app.post("/api/chat", async (req, res) => {
     console.log(JSON.stringify(body_param, null, 2));
 
     if (inbox == "40200") {
-      read(idMsg)
+      read(idMsg);
       console.log(pushname + " - " + chat);
       let userData = await getUser(from);
       if (!userData) {
@@ -186,6 +186,7 @@ app.post("/api/chat", async (req, res) => {
             note: note,
             valid_time: validTime,
             type_fee: "0",
+            callback_count: "1",
             signature: signature,
           },
         };
@@ -216,11 +217,16 @@ app.post("/api/chat", async (req, res) => {
 
       if (cmd === "ceksaldo" || chat == "saldo") {
         // send(from, `Saldo Anda saat ini: \`Rp${userData.saldo},-\``);
-        sendButton(from, "Saldo Anda saat ini: \`Rp" + userData.saldo + ",-\`", [
-          { type: "reply", reply: { id: "idbutton1", title: `List OTP`}}
-        ])
+        sendButton(from, "Saldo Anda saat ini: `Rp" + userData.saldo + ",-`", [
+          { type: "reply", reply: { id: "idbutton1", title: `List OTP` } },
+        ]);
       }
-      if (cmd == "listotp" || cmd == "otp" || chat == "otp" || chat == "List OTP") {
+      if (
+        cmd == "listotp" ||
+        cmd == "otp" ||
+        chat == "otp" ||
+        chat == "List OTP"
+      ) {
         try {
           const servicesResponse = await turboOTP.getServices();
           const apiData = servicesResponse.data.data;
@@ -245,9 +251,17 @@ app.post("/api/chat", async (req, res) => {
           whatsappFacebookServices.forEach((service) => {
             message += `${service.number}. ${service.name}\n- ID: ${service.id}\n- Harga: \`Rp${service.roundedPrice},-\`\n\n`;
           });
-          sendButton(from, message + `\n\nSilahkan kirim perintah /beli <id>.\nContoh: /beli 456`, [
-            { type: "reply", reply: { id: "idbutton1", title: `Cara Penggunaan`}}
-          ])
+          sendButton(
+            from,
+            message +
+              `\n\nSilahkan kirim perintah /beli <id>.\nContoh: /beli 456`,
+            [
+              {
+                type: "reply",
+                reply: { id: "idbutton1", title: `Cara Penggunaan` },
+              },
+            ],
+          );
           console.log(message);
         } catch (error) {
           console.error("Error:", error);
@@ -302,10 +316,21 @@ app.post("/api/chat", async (req, res) => {
               const orderText = `Silahkan login/daftar ke Aplikasi *${orderData.aplikasi_name}* menggunakan nomor ${orderData.number} untuk request kode OTP, kemudian klik tombol *Cek ${orderData.order_id}* untuk melihat SMS.\n\nID Pesanan: ${orderData.order_id}\nNomor: ${orderData.number}\nNama Aplikasi: ${service.name}`;
               console.log(orderText);
               sendButton(from, orderText, [
-                { type: "reply", reply: { id: "idbutton1", title: `Cek ${orderData.order_id}`}},
-                { type: "reply", reply: { id: "idbutton2", title:  `Batalkan ${orderData.order_id}`}}
-              ])
-              
+                {
+                  type: "reply",
+                  reply: {
+                    id: "idbutton1",
+                    title: `Cek ${orderData.order_id}`,
+                  },
+                },
+                {
+                  type: "reply",
+                  reply: {
+                    id: "idbutton2",
+                    title: `Batalkan ${orderData.order_id}`,
+                  },
+                },
+              ]);
             } else {
               console.error("Gagal menempatkan pesanan:", order.messages);
               send(from, order.data.messages);
@@ -326,9 +351,11 @@ app.post("/api/chat", async (req, res) => {
       }
 
       if (chat.toLowerCase().includes("cara penggunaan")) {
-        sendButton(from, `Cara penggunaan:\n1. \`/listotp\` untuk melihat list otp aplikasi tersedia.\n2. \`/beli id_aplikasi\`\n- Contoh: \`/beli 456\`\n3. \`/deposit 1000\` Untuk deposit saldo\n4. \`/ceksaldo\` Untuk melihat saldo`, [
-          { type: "reply", reply: { id: "idbutton1", title: `List OTP`}}
-        ])
+        sendButton(
+          from,
+          `Cara penggunaan:\n1. \`/listotp\` untuk melihat list otp aplikasi tersedia.\n2. \`/beli id_aplikasi\`\n- Contoh: \`/beli 456\`\n3. \`/deposit 1000\` Untuk deposit saldo\n4. \`/ceksaldo\` Untuk melihat saldo`,
+          [{ type: "reply", reply: { id: "idbutton1", title: `List OTP` } }],
+        );
       }
       if (chat.toLowerCase().includes("cek")) {
         if (args.length === 0) return;
@@ -366,10 +393,20 @@ app.post("/api/chat", async (req, res) => {
                 return;
               } else {
                 console.log("Tidak ada SMS untuk order dengan ID:", orderId);
-                await sendButton(from, 'OTP Belum diterima, Silahkan cek kembali!', [
-                    { type: "reply", reply: { id: "idbutton1", title: `Cek ${orderId}`}},
-                    { type: "reply", reply: { id: "idbutton2", title:  `Batalkan ${orderId}`}}
-                  ])
+                await sendButton(
+                  from,
+                  "OTP Belum diterima, Silahkan cek kembali!",
+                  [
+                    {
+                      type: "reply",
+                      reply: { id: "idbutton1", title: `Cek ${orderId}` },
+                    },
+                    {
+                      type: "reply",
+                      reply: { id: "idbutton2", title: `Batalkan ${orderId}` },
+                    },
+                  ],
+                );
               }
             }
           }
@@ -377,8 +414,6 @@ app.post("/api/chat", async (req, res) => {
           console.error("Terjadi kesalahan:", error);
         }
       }
-
-      
 
       if (chat.toLowerCase().includes("batalkan")) {
         if (args.length === 0) return;

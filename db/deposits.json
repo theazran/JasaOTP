@@ -87,6 +87,28 @@
         "checkout_url": "https://paydisini.co.id/payment/?unique_code=120590&merchant=1048",
         "created_at": "2024-04-16 11:57:11"
       }
+    },
+    {
+      "user": "6285255646434",
+      "success": true,
+      "msg": "Berhasil membuat transaksi",
+      "data": {
+        "pay_id": 380869,
+        "unique_code": "982260",
+        "service": "11",
+        "service_name": "QRIS Merchant PayDisini",
+        "amount": 100,
+        "balance": 98,
+        "fee": 2,
+        "type_fee": "2",
+        "note": "otp",
+        "status": "Pending",
+        "expired": "2024-04-17 08:38:43",
+        "qr_content": "00020101021226670016COM.NOBUBANK.WWW01189360050300000898240214545313001686520303UME51440014ID.CO.QRIS.WWW0215ID20232997650570303UME52045499530336054031005802ID5909Paydisini6006SERANG6105157306247011404170540530229061010483808690703A010804POSP6304B5DF",
+        "qrcode_url": "https://paydisini.co.id/payment/qrcode.php?unique_code=982260&merchant=1048",
+        "checkout_url": "https://paydisini.co.id/payment/?unique_code=982260&merchant=1048",
+        "created_at": "2024-04-17 08:08:43"
+      }
     }
   ]
 }
